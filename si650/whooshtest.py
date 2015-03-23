@@ -37,4 +37,3 @@ with ix.searcher() as searcher:
 
 #TODO: Add in filters for ontology type
 
-
