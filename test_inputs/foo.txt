@@ -1,3 +1,3 @@
-this is a test document.
-the quick brown fox jumped over the lazy dog.
-this is the end of the test document.
+FOO|this is a test document.
+FOO|the quick brown fox jumped over the lazy dog.
+FOO|this is the end of the test document.
