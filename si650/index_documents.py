@@ -2,23 +2,29 @@
 import argparse
 import glob
 import os
+import re
 import sys
 
 from whoosh.fields import *
 from whoosh.index import create_in
 
+#TODO: add partial matching functionality (n-grams)
+
 def _add_document(input_file, writer):
     file_reader = open(input_file, "r")
     for i, line in enumerate(file_reader.readlines()):
         doc_title = "_".join([os.path.basename(input_file), str(i + 1)])
+        ontology, unique_id, doc_content = line.split("\t")
         writer.add_document(title=unicode(doc_title,"UTF-8"),
-                            content=unicode(line, "UTF-8"))
+                            tag=unicode(ontology, "UTF-8"),
+                            content=unicode(doc_content, "UTF-8"))
     writer.commit()
 
 def _create_writer(index_dir):
     schema = Schema(title=TEXT(stored=True),
                     path=ID(stored=True),
-                    content=TEXT(stored=True))
+                    content=TEXT(stored=True),
+                    tag=TEXT(stored=True))
 
     ix = create_in(index_dir, schema)
     writer = ix.writer()
