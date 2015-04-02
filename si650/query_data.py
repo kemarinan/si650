@@ -18,13 +18,12 @@ def _get_results(searcher, query_term, filter_term):
     allow_query = Term("ontology_name", filter_term)
     print allow_query
     if filter_term:
-        results = searcher.search(query_term, filter=allow_query)
+        results = searcher.search(query_term, limit=None, terms=True, filter=allow_query)
 #     else:
 #         results = searcher.search(query_term, limit=None, terms=True)
-    print(results[:])
-
-    for hit in results:
-        print(hit.highlights("content"))
+#         print(results[:])
+        for hit in results:
+            print(hit.highlights("content"))
 
 def _query_data(args):
     ix =  _open_index()
