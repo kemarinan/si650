@@ -3,6 +3,7 @@ import argparse
 import os
 import sys
 
+from whoosh.fields import *
 from whoosh.index import open_dir
 from whoosh.qparser import QueryParser
 from whoosh.query import Term
@@ -15,24 +16,28 @@ def _open_index():
     return ix
 
 def _get_results(searcher, query_term, filter_term):
-    allow_query = Term("ontology_name", filter_term)
-    print allow_query
     if filter_term:
-        results = searcher.search(query_term, limit=None, terms=True, filter=allow_query)
-#     else:
-#         results = searcher.search(query_term, limit=None, terms=True)
-#         print(results[:])
-        for hit in results:
-            print(hit.highlights("content"))
+        allow_query = Term("tag", filter_term.lower())
+        results = searcher.search(query_term,
+                                  limit=None,
+                                  terms=True,
+                                  filter=allow_query)
+    else:
+        results = searcher.search(query_term, limit=None, terms=True)
+#     print(results[:])
+
+    for hit in results:
+        print(hit.highlights("content"))
 
 def _query_data(args):
     ix =  _open_index()
 
     user_query= args.query
     filter_term = args.filter_results
+
     query_parser = QueryParser("content", schema=ix.schema)
-    query_term = query_parser.parse(user_query)
-    print query_term
+    query_term = query_parser.parse(unicode(user_query, "UTF-8"))
+
     with ix.searcher() as searcher:
         _get_results(searcher, query_term, filter_term)
 
