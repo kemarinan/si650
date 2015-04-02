@@ -15,11 +15,12 @@ def _open_index():
     return ix
 
 def _get_results(searcher, query_term, filter_term):
-    allow_query = Term("tags", filter_term)
+    allow_query = Term("ontology_name", filter_term)
+    print allow_query
     if filter_term:
-        results = searcher.search(query_term, filter=allow_query, limit=None, terms=True)
-    else:
-        results = searcher.search(query_term, limit=None, terms=True)
+        results = searcher.search(query_term, filter=allow_query)
+#     else:
+#         results = searcher.search(query_term, limit=None, terms=True)
     print(results[:])
 
     for hit in results:
@@ -31,8 +32,8 @@ def _query_data(args):
     user_query= args.query
     filter_term = args.filter_results
     query_parser = QueryParser("content", schema=ix.schema)
-    query_term = query_parser.parse(unicode(user_query, "UTF-8"))
-    
+    query_term = query_parser.parse(user_query)
+    print query_term
     with ix.searcher() as searcher:
         _get_results(searcher, query_term, filter_term)
 
