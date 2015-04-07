@@ -1,13 +1,18 @@
-from whoosh.index import create_in
-from whoosh.qparser import QueryParser
-from whoosh.fields import *
-from whoosh.query import Term
 import os.path
 
-schema = Schema(title=TEXT(stored=True),
+from whoosh import fields
+from whoosh.analysis import StemmingAnalyzer, StemFilter
+from whoosh.fields import *
+from whoosh.index import create_in
+from whoosh.qparser import QueryParser
+from whoosh.query import Term, Variations
+
+
+stem_analyzer = StemmingAnalyzer()
+schema = Schema(title=TEXT(analyzer=stem_analyzer, stored=True),
                 path=ID(stored=True),
-                content=TEXT(stored=True),
-                tag=TEXT(stored=True))
+                content=TEXT(analyzer=stem_analyzer, stored=True),
+                tag=TEXT(analyzer=stem_analyzer, stored=True))
 
 if not os.path.exists("index"):
     os.mkdir("index")
@@ -31,13 +36,14 @@ writer.add_document(title = u"Third document",
                     content = u"This is the third document we've added!")
 writer.commit()
 
-
-qp = QueryParser("content", schema=ix.schema)
-q = qp.parse(u"first")
+qp = QueryParser("content", schema=ix.schema, termclass=Variations)
+q = qp.parse(u"documents")
 
 with ix.searcher() as searcher:
-    filter_term = Term("tag", "foo")
+    filter_term = Term("tag", "bar")
     results = searcher.search(q, limit=None, terms=True, filter=filter_term)
+#     results = searcher.search(q, limit=None, terms=True)
+    print results[:]
 
     for hit in results:
         print(hit.highlights("content"))

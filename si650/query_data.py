@@ -6,7 +6,8 @@ import sys
 from whoosh.fields import *
 from whoosh.index import open_dir
 from whoosh.qparser import QueryParser
-from whoosh.query import Term
+from whoosh.query import Term, Variations
+
 
 def _open_index():
     script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -24,7 +25,6 @@ def _get_results(searcher, query_term, filter_term):
                                   filter=allow_query)
     else:
         results = searcher.search(query_term, limit=None, terms=True)
-#     print(results[:])
 
     for hit in results:
         print "\t".join([hit["tag"], hit.highlights("content")])
@@ -35,7 +35,9 @@ def _query_data(args):
     user_query= args.query
     filter_term = args.filter_results
 
-    query_parser = QueryParser("content", schema=ix.schema)
+    query_parser = QueryParser("content",
+                               schema=ix.schema,
+                               termclass=Variations)
     query_term = query_parser.parse(unicode(user_query, "UTF-8"))
 
     with ix.searcher() as searcher:

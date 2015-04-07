@@ -5,11 +5,12 @@ import os
 import re
 import sys
 
+from whoosh.analysis import StemmingAnalyzer
 from whoosh.fields import *
 from whoosh.index import create_in
 
-#TODO: add partial matching functionality (n-grams)
 
+#TODO: add partial matching functionality (n-grams)
 def _add_document(input_file, writer):
     file_reader = open(input_file, "r")
     for i, line in enumerate(file_reader.readlines()):
@@ -21,10 +22,11 @@ def _add_document(input_file, writer):
     writer.commit()
 
 def _create_writer(index_dir):
-    schema = Schema(title=TEXT(stored=True),
+    stem_analyzer = StemmingAnalyzer()
+    schema = Schema(title=TEXT(analyzer=stem_analyzer, stored=True),
                     path=ID(stored=True),
-                    content=TEXT(stored=True),
-                    tag=TEXT(stored=True))
+                    content=TEXT(analyzer=stem_analyzer, stored=True),
+                    tag=TEXT(analyzer=stem_analyzer, stored=True))
 
     ix = create_in(index_dir, schema)
     writer = ix.writer()
