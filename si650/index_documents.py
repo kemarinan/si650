@@ -22,11 +22,12 @@ def _add_document(input_file, writer):
     writer.commit()
 
 def _create_writer(index_dir):
-    stem_analyzer = StemmingAnalyzer()
-    schema = Schema(title=TEXT(analyzer=stem_analyzer, stored=True),
+    schema = Schema(title=TEXT(stored=True),
                     path=ID(stored=True),
-                    content=TEXT(analyzer=stem_analyzer, stored=True),
-                    tag=TEXT(analyzer=stem_analyzer, stored=True))
+                    content=TEXT(analyzer=StemmingAnalyzer(),
+                                 spelling=True,
+                                 stored=True),
+                    tag=TEXT(stored=True))
 
     ix = create_in(index_dir, schema)
     writer = ix.writer()

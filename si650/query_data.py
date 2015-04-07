@@ -16,6 +16,11 @@ def _open_index():
 
     return ix
 
+def _correct_query(searcher, query_term, user_query):
+    corrected = searcher.correct_query(query_term, user_query)
+    if corrected.query != query_term:
+        print "Did you mean: {}?".format(corrected.string)
+
 def _get_results(searcher, query_term, filter_term):
     if filter_term:
         allow_query = Term("tag", filter_term.lower())
@@ -41,6 +46,7 @@ def _query_data(args):
     query_term = query_parser.parse(unicode(user_query, "UTF-8"))
 
     with ix.searcher() as searcher:
+        _correct_query(searcher, query_term, user_query)
         _get_results(searcher, query_term, filter_term)
 
 def _add_arg_parse():
