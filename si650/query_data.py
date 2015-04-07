@@ -27,7 +27,7 @@ def _get_results(searcher, query_term, filter_term):
 #     print(results[:])
 
     for hit in results:
-        print(hit.highlights("content"))
+        print "\t".join([hit["tag"], hit.highlights("content")])
 
 def _query_data(args):
     ix =  _open_index()
