@@ -10,7 +10,6 @@ from whoosh.fields import *
 from whoosh.index import create_in
 
 
-#TODO: add partial matching functionality (n-grams)
 def _add_document(input_file, writer):
     file_reader = open(input_file, "r")
     for i, line in enumerate(file_reader.readlines()):

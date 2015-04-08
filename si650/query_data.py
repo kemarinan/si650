@@ -31,8 +31,30 @@ def _get_results(searcher, query_term, filter_term):
     else:
         results = searcher.search(query_term, limit=None, terms=True)
 
+    all_results = []
     for hit in results:
-        print "\t".join([hit["tag"], hit.highlights("content")])
+         all_results.append("\t".join([hit["tag"], hit.highlights("content")]))
+
+    return all_results
+
+def _write_to_output_file(all_results, output_fname):
+    output_file = open(output_fname, "w")
+
+    for result in all_results:
+        output_file.write(result + "\n")
+
+    output_file.close()
+
+def _create_output_dir():
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    output_dir = os.path.join(script_dir, "output")
+
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+
+    output_fname = os.path.join(output_dir, "output.csv")
+
+    return output_fname
 
 def _query_data(args):
     ix =  _open_index()
@@ -47,7 +69,9 @@ def _query_data(args):
 
     with ix.searcher() as searcher:
         _correct_query(searcher, query_term, user_query)
-        _get_results(searcher, query_term, filter_term)
+        all_results = _get_results(searcher, query_term, filter_term)
+
+    return all_results
 
 def _add_arg_parse():
     command_line_args = sys.argv[1:]
@@ -60,6 +84,12 @@ def _add_arg_parse():
 
     return parser.parse_args(command_line_args)
 
-if __name__ == "__main__":
+def main():
     args = _add_arg_parse()
-    _query_data(args)
+    all_results = _query_data(args)
+    output_fname =  _create_output_dir()
+    _write_to_output_file(all_results, output_fname)
+
+if __name__ == "__main__":
+    main()
+
