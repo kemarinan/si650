@@ -32,8 +32,10 @@ def _get_results(searcher, query_term, filter_term):
         results = searcher.search(query_term, limit=None, terms=True)
 
     all_results = []
+    all_results.append(",".join(["Ontology", "Text"]))
+
     for hit in results:
-         all_results.append("\t".join([hit["tag"], hit.highlights("content")]))
+         all_results.append(",".join([hit["tag"], hit.highlights("content")]))
 
     return all_results
 
