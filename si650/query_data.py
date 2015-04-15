@@ -27,7 +27,7 @@ def _create_hyperlink(hit):
     if ontology == "SNOMEDCT_US":
         hyperlink_prefix = "http://www.snomedbrowser.com/Codes/Details/"
     elif ontology == "LNC":
-         pass
+        hyperlink_prefix = "https://search.loinc.org/search.zul?query="
     elif ontology == "ICD10CM":
         hyperlink_prefix = "http://www.cms.gov/medicare-coverage-database/staticpages/icd-10-code-lookup.aspx?KeyWord="
     elif ontology == "RXNORM":
