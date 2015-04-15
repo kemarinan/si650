@@ -21,6 +21,20 @@ def _correct_query(searcher, query_term, user_query):
     if corrected.query != query_term:
         print "Did you mean: {}?".format(corrected.string)
 
+def _create_hyperlink(hit):
+    hyperlink_prefix = ""
+    ontology = hit["tag"].strip('"')
+    if ontology == "SNOMEDCT_US":
+        hyperlink_prefix = "http://www.snomedbrowser.com/Codes/Details/"
+    elif ontology == "LNC":
+         pass
+    elif ontology == "ICD10CM":
+        hyperlink_prefix = "http://www.cms.gov/medicare-coverage-database/staticpages/icd-10-code-lookup.aspx?KeyWord="
+    elif ontology == "RXNORM":
+        hyperlink_prefix = "http://purl.bioontology.org/ontology/RXNORM/"
+
+    return hyperlink_prefix + hit["umls_id"]
+
 def _get_results(searcher, query_term, filter_term):
     if filter_term:
         allow_query = Term("tag", filter_term.lower())
@@ -32,10 +46,11 @@ def _get_results(searcher, query_term, filter_term):
         results = searcher.search(query_term, limit=None, terms=True)
 
     all_results = []
-    all_results.append(",".join(["Ontology", "Text"]))
+    all_results.append(",".join(["Ontology", "ID", "Text"]))
 
     for hit in results:
-         all_results.append(",".join([hit["tag"], hit.highlights("content")]))
+         hyperlink = _create_hyperlink(hit)
+         all_results.append(",".join([hit["tag"], hyperlink, hit.highlights("content")]))
 
     return all_results
 
@@ -43,6 +58,7 @@ def _write_to_output_file(all_results, output_fname):
     output_file = open(output_fname, "w")
 
     for result in all_results:
+        print result
         output_file.write(result + "\n")
 
     output_file.close()

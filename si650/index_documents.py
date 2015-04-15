@@ -17,6 +17,7 @@ def _add_document(input_file, writer):
         ontology, unique_id, doc_content = line.split("\t")
         writer.add_document(title=unicode(doc_title,"UTF-8"),
                             tag=unicode(ontology, "UTF-8"),
+                            umls_id=unicode(unique_id, "UTF-8"),
                             content=unicode(doc_content, "UTF-8"))
     writer.commit()
 
@@ -26,7 +27,8 @@ def _create_writer(index_dir):
                     content=TEXT(analyzer=StemmingAnalyzer(),
                                  spelling=True,
                                  stored=True),
-                    tag=TEXT(stored=True))
+                    tag=TEXT(stored=True),
+                    umls_id=TEXT(stored=True))
 
     ix = create_in(index_dir, schema)
     writer = ix.writer()
