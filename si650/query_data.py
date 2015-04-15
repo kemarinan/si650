@@ -58,7 +58,6 @@ def _write_to_output_file(all_results, output_fname):
     output_file = open(output_fname, "w")
 
     for result in all_results:
-        print result
         output_file.write(result + "\n")
 
     output_file.close()
