@@ -45,12 +45,11 @@ def _check_index_dir():
 def _index_documents(input_tsv):
     index_dir = _check_index_dir()
     writer = _create_writer(index_dir)
-
     _add_document(input_tsv, writer)
 
 def run():
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    input_tsv = os.path.join([script_dir, "sample_data_quoted.tsv"])
+    input_tsv = os.path.join(script_dir, "sample_data_quoted.tsv")
     _index_documents(input_tsv)
 
 if __name__ == "__main__":
