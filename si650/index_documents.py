@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-import argparse
-import glob
 import os
 import re
 import sys
@@ -44,28 +42,16 @@ def _check_index_dir():
 
     return index_dir
 
-def _index_documents(args):
+def _index_documents(input_tsv):
     index_dir = _check_index_dir()
     writer = _create_writer(index_dir)
 
-    input_dir = args.input_dir
-    input_files = glob.glob(os.path.join(input_dir, "*"))
+    _add_document(input_tsv, writer)
 
-    for input_file in input_files:
-        _add_document(input_file, writer)
-
-def _add_arg_parse():
-    command_line_args = sys.argv[1:]
-    parser = argparse.ArgumentParser()
-    parser.add_argument("input_dir", help=("Path to the input directory "
-                                           "containing a collection of"
-                                           "files to be indexed into documents"))
-
-    return parser.parse_args(command_line_args)
-
-def run(*args):
-#     args = _add_arg_parse()
-    _index_documents(args)
+def run():
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    input_tsv = os.path.join([script_dir, "sample_data_quoted.tsv"])
+    _index_documents(input_tsv)
 
 if __name__ == "__main__":
     run()
