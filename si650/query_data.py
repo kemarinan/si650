@@ -101,12 +101,12 @@ def _add_arg_parse():
 
     return parser.parse_args(command_line_args)
 
-def main():
+def run():
     args = _add_arg_parse()
     all_results = _query_data(args)
     output_fname =  _create_output_dir()
     _write_to_output_file(all_results, output_fname)
 
 if __name__ == "__main__":
-    main()
+    run()
 

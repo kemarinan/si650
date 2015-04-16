@@ -63,6 +63,9 @@ def _add_arg_parse():
 
     return parser.parse_args(command_line_args)
 
-if __name__ == "__main__":
+def run():
     args = _add_arg_parse()
     _index_documents(args)
+
+if __name__ == "__main__":
+    run()
