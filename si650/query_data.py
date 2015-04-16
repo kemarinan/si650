@@ -101,8 +101,8 @@ def _add_arg_parse():
 
     return parser.parse_args(command_line_args)
 
-def run():
-    args = _add_arg_parse()
+def run(*args):
+#     args = _add_arg_parse()
     all_results = _query_data(args)
     output_fname =  _create_output_dir()
     _write_to_output_file(all_results, output_fname)
